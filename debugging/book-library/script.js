@@ -1,4 +1,8 @@
 const myLibrary = [];
+const titleInput = document.getElementById("title");
+const authorInput = document.getElementById("author");
+const pagesInput = document.getElementById("pages");
+const readCheckbox = document.getElementById("check");
 
 window.addEventListener("load", function () {
   populateStorage();
@@ -20,11 +24,6 @@ function populateStorage() {
     // removed extra render() here
   }
 }
-
-const titleInput = document.getElementById("title");
-const authorInput = document.getElementById("author");
-const pagesInput = document.getElementById("pages");
-const readCheckbox = document.getElementById("check");
 
 function submit() {
   const title = titleInput.value.trim();
