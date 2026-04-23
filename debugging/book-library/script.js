@@ -49,21 +49,17 @@ function Book(title, author, pages, check) {
 }
 
 function render() {
-  const table = document.getElementById("display");
-
-  // remove old rows (keep header row)
-  while (table.rows.length > 1) {
-    table.deleteRow(1);
-  }
+  const tbody = document.querySelector("#display tbody");
+  tbody.innerHTML = "";
 
   for (let i = 0; i < myLibrary.length; i++) {
-    const row = table.insertRow(1);
+    const row = document.createElement("tr");
 
-    const titleCell = row.insertCell(0);
-    const authorCell = row.insertCell(1);
-    const pagesCell = row.insertCell(2);
-    const wasReadCell = row.insertCell(3);
-    const deleteCell = row.insertCell(4);
+    const titleCell = document.createElement("td");
+    const authorCell = document.createElement("td");
+    const pagesCell = document.createElement("td");
+    const wasReadCell = document.createElement("td");
+    const deleteCell = document.createElement("td");
 
     titleCell.textContent = myLibrary[i].title;
     authorCell.textContent = myLibrary[i].author;
@@ -94,5 +90,12 @@ function render() {
     });
 
     deleteCell.appendChild(deleteButton);
+    row.appendChild(titleCell);
+    row.appendChild(authorCell);
+    row.appendChild(pagesCell);
+    row.appendChild(wasReadCell);
+    row.appendChild(deleteCell);
+
+    tbody.appendChild(row);
   }
 }
