@@ -1,101 +1,66 @@
 const myLibrary = [];
+
 const titleInput = document.getElementById("title");
 const authorInput = document.getElementById("author");
 const pagesInput = document.getElementById("pages");
 const readCheckbox = document.getElementById("check");
 
-window.addEventListener("load", function () {
-  populateStorage();
-  render(); // only called once now
-});
+const tableBody = document.getElementById("table-body");
+const form = document.getElementById("book-form");
 
-function populateStorage() {
-  if (myLibrary.length === 0) {
-    const book1 = new Book("Robison Crusoe", "Daniel Defoe", 252, true);
-    const book2 = new Book(
-      "The Old Man and the Sea",
-      "Ernest Hemingway",
-      127,
-      true
-    );
-
-    myLibrary.push(book1, book2);
-
-    // removed extra render() here
-  }
-}
-
-function submit() {
-  const title = titleInput.value.trim();
-  const author = authorInput.value.trim();
-  const pages = Number(pagesInput.value);
-
-  if (!title || !author || !pages || pages <= 0) {
-    alert("Please fill all fields correctly!");
-    return;
-  }
-
-  const book = new Book(title, author, pages, readCheckbox.checked);
-
-  myLibrary.push(book);
-  render();
-}
-
-function Book(title, author, pages, check) {
+function Book(title, author, pages, wasRead) {
   this.title = title;
   this.author = author;
   this.pages = pages;
-  this.check = check;
+  this.wasRead = wasRead;
+}
+
+function addBookToLibrary(title, author, pages, wasRead) {
+  const newBook = new Book(title, author, pages, wasRead);
+  myLibrary.push(newBook);
 }
 
 function render() {
-  const tbody = document.querySelector("#display tbody");
-  tbody.innerHTML = "";
+  tableBody.innerHTML = "";
 
-  for (let i = 0; i < myLibrary.length; i++) {
-    const row = document.createElement("tr");
+  myLibrary.forEach((book, index) => {
+    const row = tableBody.insertRow();
 
-    const titleCell = document.createElement("td");
-    const authorCell = document.createElement("td");
-    const pagesCell = document.createElement("td");
-    const wasReadCell = document.createElement("td");
-    const deleteCell = document.createElement("td");
+    const titleCell = row.insertCell(0);
+    const authorCell = row.insertCell(1);
+    const pagesCell = row.insertCell(2);
+    const readCell = row.insertCell(3);
+    const deleteCell = row.insertCell(4);
 
-    titleCell.textContent = myLibrary[i].title;
-    authorCell.textContent = myLibrary[i].author;
-    pagesCell.textContent = myLibrary[i].pages;
+    titleCell.textContent = book.title;
+    authorCell.textContent = book.author;
+    pagesCell.textContent = book.pages;
+    readCell.textContent = book.wasRead ? "Read" : "Not Read";
 
-    const toggleButton = document.createElement("button");
-    toggleButton.className = "btn btn-success";
-    toggleButton.textContent = myLibrary[i].check ? "Yes" : "No";
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
 
-    toggleButton.addEventListener("click", function () {
-      myLibrary[i].check = !myLibrary[i].check;
+    deleteBtn.addEventListener("click", () => {
+      myLibrary.splice(index, 1);
       render();
     });
 
-    wasReadCell.appendChild(toggleButton);
-
-    const deleteButton = document.createElement("button");
-    deleteButton.className = "btn btn-warning";
-    deleteButton.textContent = "Delete";
-
-    deleteButton.addEventListener("click", function () {
-      const deletedTitle = myLibrary[i].title;
-
-      myLibrary.splice(i, 1);
-      render();
-
-      alert(`You've deleted title: ${deletedTitle}`);
-    });
-
-    deleteCell.appendChild(deleteButton);
-    row.appendChild(titleCell);
-    row.appendChild(authorCell);
-    row.appendChild(pagesCell);
-    row.appendChild(wasReadCell);
-    row.appendChild(deleteCell);
-
-    tbody.appendChild(row);
-  }
+    deleteCell.appendChild(deleteBtn);
+  });
 }
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  addBookToLibrary(
+    titleInput.value,
+    authorInput.value,
+    pagesInput.value,
+    readCheckbox.checked
+  );
+
+  form.reset();
+  render();
+});
+
+render();
